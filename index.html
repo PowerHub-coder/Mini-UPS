@@ -297,26 +297,28 @@
       border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 20px;
       padding: 2px 8px;
+      user-select: none;
     }
     .qty-btn {
       background: transparent;
       border: none;
       color: #ffcc00;
-      font-size: 16px;
+      font-size: 18px;
       font-weight: bold;
-      width: 26px;
-      height: 26px;
+      width: 28px;
+      height: 28px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       transition: transform 0.1s ease;
+      outline: none;
     }
     .qty-btn:active {
-      transform: scale(0.85);
+      transform: scale(0.8);
     }
     .qty-val {
-      font-size: 13px;
+      font-size: 14px;
       font-weight: bold;
       color: #fff;
       padding: 0 8px;
@@ -459,7 +461,6 @@
         <div class="product-title" id="productName">PRODUCT NAME</div>
         <div class="features-mini">
           <span><i class="fa-solid fa-check-circle" style="color: #4caf50;"></i> Premium</span>
-          <!-- Total Sold Badge -->
           <span class="sold-badge-mini">
             <i class="fa-solid fa-fire"></i> <span id="totalSoldVal">1,250</span>+ Sold
           </span>
@@ -501,9 +502,9 @@
         <div class="summary-row">
           <span>Product Quantity</span>
           <div class="qty-control">
-            <button type="button" class="qty-btn" onclick="updateQty(-1)">-</button>
+            <button type="button" class="qty-btn" id="qtyMinusBtn">-</button>
             <span class="qty-val" id="qtyDisplay">01</span>
-            <button type="button" class="qty-btn" onclick="updateQty(1)">+</button>
+            <button type="button" class="qty-btn" id="qtyPlusBtn">+</button>
           </div>
         </div>
 
@@ -527,7 +528,7 @@
     <!-- Delivery Information Form -->
     <div class="card animate-item delay-5">
       <div class="card-title"><i class="fa-solid fa-location-dot"></i> DELIVERY INFORMATION</div>
-      <form id="orderForm" onsubmit="handleOrderSubmit(event)">
+      <form id="orderForm">
         <div class="form-group">
           <input type="text" id="custName" class="form-input" placeholder="Name / আপনার নাম" required>
         </div>
@@ -561,7 +562,7 @@
 
   </div>
 
-  <!-- JavaScript Config & Dynamic Updates -->
+  <!-- JavaScript Config & Solid Event Listeners -->
   <script>
     const PRODUCT_CONFIG = {
       companyName: "YOUR COMPANY",
@@ -570,12 +571,9 @@
       productName: "SMART WATCH ULTRA",
       unitPrice: 1499,
       deliveryCharge: 120,
-      
-      // 🆕 Total Sold এডিট করার ঘর:
-      totalSold: 1250,             // মোট কত পিস বিক্রি হয়েছে (English Digits)
-      
+      totalSold: 1250,
       warranty: "1 Year Warranty",
-      inStock: true,
+      inStock: true, // স্টক না থাকলে এটিকে false করুন
       imageUrl: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500", 
       description: "High quality smartwatch with 1.9 inch HD display and long lasting battery backup.",
       whatsappNumber: "+8801700000000"
@@ -588,10 +586,7 @@
       document.getElementById("companyTagline").innerText = PRODUCT_CONFIG.companyTagline;
       document.getElementById("productId").innerText = PRODUCT_CONFIG.productId;
       document.getElementById("productName").innerText = PRODUCT_CONFIG.productName;
-      
-      // Total Sold আপডেট
       document.getElementById("totalSoldVal").innerText = PRODUCT_CONFIG.totalSold.toLocaleString('en-US');
-      
       document.getElementById("productUnitPrice").innerText = PRODUCT_CONFIG.unitPrice.toLocaleString('en-US');
       document.getElementById("deliveryCharge").innerText = PRODUCT_CONFIG.deliveryCharge.toLocaleString('en-US');
       document.getElementById("productImage").src = PRODUCT_CONFIG.imageUrl;
@@ -619,6 +614,7 @@
 
     function updateQty(change) {
       if (!PRODUCT_CONFIG.inStock) return;
+      
       if (selectedQty + change >= 1) {
         selectedQty += change;
         calculateTotal();
@@ -634,7 +630,19 @@
       document.getElementById("totalAmount").innerText = grandTotal.toLocaleString('en-US');
     }
 
-    function handleOrderSubmit(event) {
+    // Direct Event Listeners for Buttons (১০০% কাজের নিশ্চয়তা)
+    document.getElementById("qtyMinusBtn").addEventListener("click", function(e) {
+      e.preventDefault();
+      updateQty(-1);
+    });
+
+    document.getElementById("qtyPlusBtn").addEventListener("click", function(e) {
+      e.preventDefault();
+      updateQty(1);
+    });
+
+    // Form Submit Event Listener
+    document.getElementById("orderForm").addEventListener("submit", function(event) {
       event.preventDefault();
 
       if (!PRODUCT_CONFIG.inStock) {
@@ -657,11 +665,4 @@
         `🔢 *Quantity:* ${selectedQty}%0A` +
         `💵 *Subtotal:* ৳${subtotal.toLocaleString('en-US')}%0A` +
         `🚚 *Delivery Charge:* ৳${PRODUCT_CONFIG.deliveryCharge.toLocaleString('en-US')}%0A` +
-        `💰 *Total Amount:* ৳${grandTotal.toLocaleString('en-US')}%0A%0A` +
-        `👤 *Customer Details:*%0A` +
-        `• Name: ${name}%0A` +
-        `• Phone: ${phone}%0A` +
-        `• Location: ${upazila}, ${district}%0A` +
-        `• Address: ${address}`;
-
-      const waUrl = `https://wa.me/${PRODUCT_CONFIG.whatsappNumber.rep
+        `💰 *Total Amount:* ৳${grandTotal.toLocaleStri
