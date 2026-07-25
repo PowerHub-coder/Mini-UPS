@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+            <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -173,7 +173,7 @@
       color: #c0c0e0;
     }
 
-    /* Total Sold Flame Badge */
+    /* Total Sold Badge */
     .sold-badge-mini {
       background: rgba(255, 87, 34, 0.15);
       border: 1px solid rgba(255, 87, 34, 0.4);
@@ -226,7 +226,7 @@
       animation: none;
     }
 
-    /* Description Card */
+    /* Card Layout */
     .card {
       background: rgba(255, 255, 255, 0.03);
       border: 1px solid rgba(255, 255, 255, 0.08);
@@ -300,28 +300,31 @@
       user-select: none;
     }
     .qty-btn {
-      background: transparent;
+      background: rgba(255, 255, 255, 0.1);
       border: none;
       color: #ffcc00;
       font-size: 18px;
       font-weight: bold;
-      width: 28px;
-      height: 28px;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: transform 0.1s ease;
-      outline: none;
+      transition: background 0.2s ease, transform 0.1s ease;
+    }
+    .qty-btn:hover {
+      background: rgba(255, 255, 255, 0.25);
     }
     .qty-btn:active {
-      transform: scale(0.8);
+      transform: scale(0.85);
     }
     .qty-val {
       font-size: 14px;
       font-weight: bold;
       color: #fff;
-      padding: 0 8px;
+      padding: 0 12px;
     }
 
     .summary-row.total {
@@ -401,9 +404,6 @@
       color: #888899 !important;
       cursor: not-allowed;
       box-shadow: none;
-    }
-    .btn-order:disabled::after {
-      display: none;
     }
 
     /* WhatsApp Bar */
@@ -502,9 +502,10 @@
         <div class="summary-row">
           <span>Product Quantity</span>
           <div class="qty-control">
-            <button type="button" class="qty-btn" id="qtyMinusBtn">-</button>
+            <!-- 🆕 Global onclick Handler Binding -->
+            <button type="button" class="qty-btn" onclick="window.updateQty(-1)">-</button>
             <span class="qty-val" id="qtyDisplay">01</span>
-            <button type="button" class="qty-btn" id="qtyPlusBtn">+</button>
+            <button type="button" class="qty-btn" onclick="window.updateQty(1)">+</button>
           </div>
         </div>
 
@@ -562,7 +563,7 @@
 
   </div>
 
-  <!-- JavaScript Config & Solid Event Listeners -->
+  <!-- Bulletproof JavaScript -->
   <script>
     const PRODUCT_CONFIG = {
       companyName: "YOUR COMPANY",
@@ -571,15 +572,38 @@
       productName: "SMART WATCH ULTRA",
       unitPrice: 1499,
       deliveryCharge: 120,
-      totalSold: 1250,
+      totalSold: 1250, // এডিট করার জন্য
       warranty: "1 Year Warranty",
-      inStock: true, // স্টক না থাকলে এটিকে false করুন
+      inStock: true,
       imageUrl: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500", 
       description: "High quality smartwatch with 1.9 inch HD display and long lasting battery backup.",
       whatsappNumber: "+8801700000000"
     };
 
     let selectedQty = 1;
+
+    // Global Quantity Update Function
+    window.updateQty = function(change) {
+      if (!PRODUCT_CONFIG.inStock) return;
+
+      if (selectedQty + change >= 1) {
+        selectedQty += change;
+        calculateTotal();
+      }
+    };
+
+    function calculateTotal() {
+      const subtotal = PRODUCT_CONFIG.unitPrice * selectedQty;
+      const grandTotal = subtotal + PRODUCT_CONFIG.deliveryCharge;
+
+      const qtyDisplay = document.getElementById("qtyDisplay");
+      const subtotalPrice = document.getElementById("subtotalPrice");
+      const totalAmount = document.getElementById("totalAmount");
+
+      if (qtyDisplay) qtyDisplay.innerText = selectedQty < 10 ? "0" + selectedQty : selectedQty;
+      if (subtotalPrice) subtotalPrice.innerText = subtotal.toLocaleString('en-US');
+      if (totalAmount) totalAmount.innerText = grandTotal.toLocaleString('en-US');
+    }
 
     function initPage() {
       document.getElementById("companyName").innerText = PRODUCT_CONFIG.companyName;
@@ -612,57 +636,30 @@
       calculateTotal();
     }
 
-    function updateQty(change) {
-      if (!PRODUCT_CONFIG.inStock) return;
-      
-      if (selectedQty + change >= 1) {
-        selectedQty += change;
-        calculateTotal();
-      }
-    }
+    // DOM Ready Guarantee
+    document.addEventListener("DOMContentLoaded", function() {
+      initPage();
 
-    function calculateTotal() {
-      const subtotal = PRODUCT_CONFIG.unitPrice * selectedQty;
-      const grandTotal = subtotal + PRODUCT_CONFIG.deliveryCharge;
+      document.getElementById("orderForm").addEventListener("submit", function(event) {
+        event.preventDefault();
 
-      document.getElementById("qtyDisplay").innerText = selectedQty < 10 ? "0" + selectedQty : selectedQty;
-      document.getElementById("subtotalPrice").innerText = subtotal.toLocaleString('en-US');
-      document.getElementById("totalAmount").innerText = grandTotal.toLocaleString('en-US');
-    }
+        if (!PRODUCT_CONFIG.inStock) {
+          alert("Sorry, this item is currently out of stock!");
+          return;
+        }
 
-    // Direct Event Listeners for Buttons (১০০% কাজের নিশ্চয়তা)
-    document.getElementById("qtyMinusBtn").addEventListener("click", function(e) {
-      e.preventDefault();
-      updateQty(-1);
-    });
+        const name = document.getElementById("custName").value;
+        const phone = document.getElementById("custPhone").value;
+        const district = document.getElementById("custDistrict").value;
+        const upazila = document.getElementById("custUpazila").value;
+        const address = document.getElementById("custAddress").value;
 
-    document.getElementById("qtyPlusBtn").addEventListener("click", function(e) {
-      e.preventDefault();
-      updateQty(1);
-    });
+        const subtotal = PRODUCT_CONFIG.unitPrice * selectedQty;
+        const grandTotal = subtotal + PRODUCT_CONFIG.deliveryCharge;
 
-    // Form Submit Event Listener
-    document.getElementById("orderForm").addEventListener("submit", function(event) {
-      event.preventDefault();
-
-      if (!PRODUCT_CONFIG.inStock) {
-        alert("Sorry, this item is currently out of stock!");
-        return;
-      }
-
-      const name = document.getElementById("custName").value;
-      const phone = document.getElementById("custPhone").value;
-      const district = document.getElementById("custDistrict").value;
-      const upazila = document.getElementById("custUpazila").value;
-      const address = document.getElementById("custAddress").value;
-
-      const subtotal = PRODUCT_CONFIG.unitPrice * selectedQty;
-      const grandTotal = subtotal + PRODUCT_CONFIG.deliveryCharge;
-
-      const message = `🛒 *NEW ORDER RECEIVED*%0A%0A` +
-        `📦 *Product:* ${PRODUCT_CONFIG.productName} (ID: ${PRODUCT_CONFIG.productId})%0A` +
-        `🛡️ *Warranty:* ${PRODUCT_CONFIG.warranty}%0A` +
-        `🔢 *Quantity:* ${selectedQty}%0A` +
-        `💵 *Subtotal:* ৳${subtotal.toLocaleString('en-US')}%0A` +
-        `🚚 *Delivery Charge:* ৳${PRODUCT_CONFIG.deliveryCharge.toLocaleString('en-US')}%0A` +
-        `💰 *Total Amount:* ৳${grandTotal.toLocaleStri
+        const message = `🛒 *NEW ORDER RECEIVED*%0A%0A` +
+          `📦 *Product:* ${PRODUCT_CONFIG.productName} (ID: ${PRODUCT_CONFIG.productId})%0A` +
+          `🛡️ *Warranty:* ${PRODUCT_CONFIG.warranty}%0A` +
+          `🔢 *Quantity:* ${selectedQty}%0A` +
+          `💵 *Subtotal:* ৳${subtotal.toLocaleString('en-US')}%0A` +
+          `🚚 *Delivery Charge:* ৳${PRODUCT_CONFIG.deliveryCharge.toLoca
