@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Animated Product Landing Page</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(180deg, #060513 0%, #0c0926 100%);
+      color: #ffffff;
+      display: flex;
+      justify-content: center;
+      padding: 20px 10px;
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 480px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    /* Keyframe Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(25px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-8px);
+      }
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% {
+        box-shadow: 0 0 10px rgba(39, 174, 96, 0.4);
+      }
+      50% {
+        box-shadow: 0 0 20px rgba(39, 174, 96, 0.8);
+      }
+    }
+
+    @keyframes shimmer {
+      0% {
+        left: -100%;
+      }
+      100% {
+        left: 100%;
+      }
+    }
+
+    /* Staggered Load Animations */
+    .animate-item {
+      opacity: 0;
+      animation: fadeInUp 0.6s ease-out forwards;
+    }
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.2s; }
+    .delay-3 { animation-delay: 0.3s; }
+    .delay-4 { animation-delay: 0.4s; }
+    .delay-5 { animation-delay: 0.5s; }
+    .delay-6 { animation-delay: 0.6s; }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo-icon {
+      font-size: 28px;
+      color: #f39c12;
+      transition: transform 0.3s ease;
+    }
+    .logo-box:hover .logo-icon {
+      transform: rotate(-10deg) scale(1.1);
+    }
+    .company-title {
+      font-size: 16px;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+    .company-sub {
+      font-size: 11px;
+      color: #a0a0c0;
+    }
+    .badge-id {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      color: #ffcc00;
+      backdrop-filter: blur(5px);
+    }
+
+    /* Image Banner with Floating Effect */
+    .banner-card {
+      position: relative;
+      background: radial-gradient(circle, #2a2050 0%, #100d2b 100%);
+      border-radius: 20px;
+      padding: 20px;
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      overflow: hidden;
+    }
+    .product-img {
+      width: 80%;
+      max-height: 250px;
+      object-fit: contain;
+      animation: float 3.5s ease-in-out infinite;
+      filter: drop-shadow(0 15px 15px rgba(0,0,0,0.5));
+    }
+    .quality-tag {
+      position: absolute;
+      top: 0;
+      right: 15px;
+      background: linear-gradient(180deg, #d4af37 0%, #85581A 100%);
+      padding: 8px 12px;
+      border-radius: 0 0 10px 10px;
+      font-size: 10px;
+      font-weight: bold;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    /* Name & Price Section */
+    .price-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+    .product-title {
+      font-size: 20px;
+      font-weight: bold;
+      text-transform: uppercase;
+      border-bottom: 2px solid #ffcc00;
+      display: inline-block;
+      padding-bottom: 4px;
+      margin-bottom: 8px;
+    }
+    .features-mini {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 10px;
+      color: #c0c0e0;
+    }
+
+    /* Total Sold Flame Badge */
+    .sold-badge-mini {
+      background: rgba(255, 87, 34, 0.15);
+      border: 1px solid rgba(255, 87, 34, 0.4);
+      color: #ff7043;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-weight: bold;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .price-card {
+      background: linear-gradient(135deg, #4a1272 0%, #7b1fa2 100%);
+      padding: 12px 18px;
+      border-radius: 16px;
+      text-align: center;
+      min-width: 140px;
+      box-shadow: 0 4px 15px rgba(123, 31, 162, 0.4);
+      transition: transform 0.3s ease;
+    }
+    .price-card:hover {
+      transform: translateY(-3px);
+    }
+    .price-label {
+      font-size: 11px;
+      letter-spacing: 1px;
+      color: #e0d0f0;
+    }
+    .price-val {
+      font-size: 22px;
+      font-weight: bold;
+      color: #ffd700;
+      margin: 4px 0;
+    }
+    
+    /* Dynamic Stock Status Badge */
+    .stock-badge {
+      background: linear-gradient(90deg, #27ae60, #2ecc71);
+      color: #fff;
+      font-size: 10px;
+      font-weight: bold;
+      padding: 3px 8px;
+      border-radius: 10px;
+      display: inline-block;
+      animation: pulseGlow 2s infinite;
+    }
+    .stock-badge.out-of-stock {
+      background: linear-gradient(90deg, #e74c3c, #c0392b);
+      animation: none;
+    }
+
+    /* Description Card */
+    .card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 16px;
+      transition: border-color 0.3s ease;
+    }
+    .card:hover {
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+    .card-title {
+      font-size: 13px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      color: #d1c4e9;
+    }
+    .desc-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 12px;
+      font-size: 11px;
+      color: #b0b0d0;
+      line-height: 1.5;
+    }
+    .spec-icons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      text-align: center;
+      border-left: 1px solid rgba(255, 255, 255, 0.1);
+      padding-left: 10px;
+    }
+    .spec-item {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 8px 4px;
+      border-radius: 8px;
+      font-size: 10px;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+    .spec-item:hover {
+      transform: scale(1.05);
+      background: rgba(255, 255, 255, 0.1);
+    }
+    .spec-item i {
+      font-size: 14px;
+      color: #ab47bc;
+      margin-bottom: 3px;
+    }
+
+    /* Order Summary & Calculator */
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 12px;
+      color: #c0c0e0;
+    }
+
+    /* Quantity Controls */
+    .qty-control {
+      display: flex;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      padding: 2px 8px;
+    }
+    .qty-btn {
+      background: transparent;
+      border: none;
+      color: #ffcc00;
+      font-size: 16px;
+      font-weight: bold;
+      width: 26px;
+      height: 26px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.1s ease;
+    }
+    .qty-btn:active {
+      transform: scale(0.85);
+    }
+    .qty-val {
+      font-size: 13px;
+      font-weight: bold;
+      color: #fff;
+      padding: 0 8px;
+    }
+
+    .summary-row.total {
+      font-size: 16px;
+      font-weight: bold;
+      color: #ffd700;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 10px;
+      margin-top: 10px;
+    }
+
+    /* Form Inputs */
+    .form-group {
+      margin-bottom: 12px;
+    }
+    .form-input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 1px dotted rgba(255, 255, 255, 0.3);
+      padding: 8px 0;
+      color: #fff;
+      font-size: 12px;
+      outline: none;
+      transition: border-color 0.3s ease, padding-left 0.3s ease;
+    }
+    .form-input:focus {
+      border-bottom-color: #ffcc00;
+      border-bottom-style: solid;
+      padding-left: 5px;
+    }
+    .form-input::placeholder {
+      color: #777;
+    }
+
+    /* Animated Order Button */
+    .btn-order {
+      position: relative;
+      width: 100%;
+      background: linear-gradient(135deg, #f39c12 0%, #f1c40f 100%);
+      color: #000;
+      font-weight: bold;
+      padding: 12px;
+      border: none;
+      border-radius: 25px;
+      font-size: 14px;
+      cursor: pointer;
+      margin-top: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);
+      overflow: hidden;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .btn-order::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 50%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      transform: skewX(-20deg);
+      animation: shimmer 2.5s infinite;
+    }
+    .btn-order:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(243, 156, 18, 0.5);
+    }
+    .btn-order:active {
+      transform: scale(0.98);
+    }
+    .btn-order:disabled {
+      background: #444455 !important;
+      color: #888899 !important;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+    .btn-order:disabled::after {
+      display: none;
+    }
+
+    /* WhatsApp Bar */
+    .whatsapp-bar {
+      background: linear-gradient(90deg, #00b09b 0%, #96c93d 100%);
+      border-radius: 16px;
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 15px rgba(0, 176, 155, 0.3);
+    }
+    .wa-btn {
+      background: #ffffff;
+      color: #00b09b;
+      padding: 8px 14px;
+      border-radius: 20px;
+      font-weight: bold;
+      font-size: 11px;
+      text-decoration: none;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .wa-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Header -->
+    <div class="header animate-item delay-1">
+      <div class="logo-box">
+        <i class="fa-solid fa-bag-shopping logo-icon"></i>
+        <div>
+          <div class="company-title" id="companyName">YOUR COMPANY</div>
+          <div class="company-sub" id="companyTagline">Quality You Can Trust</div>
+        </div>
+      </div>
+      <div class="badge-id">Product ID: <span id="productId">0023</span></div>
+    </div>
+
+    <!-- Product Image Banner -->
+    <div class="banner-card animate-item delay-2">
+      <div class="quality-tag">
+        <i class="fa-solid fa-crown"></i><br>PREMIUM<br>QUALITY
+      </div>
+      <img id="productImage" src="https://i.ibb.co/L5B7n6J/watch.png" alt="Product" class="product-img">
+    </div>
+
+    <!-- Title, Price & Total Sold -->
+    <div class="price-row animate-item delay-3">
+      <div>
+        <div class="product-title" id="productName">PRODUCT NAME</div>
+        <div class="features-mini">
+          <span><i class="fa-solid fa-check-circle" style="color: #4caf50;"></i> Premium</span>
+          <!-- Total Sold Badge -->
+          <span class="sold-badge-mini">
+            <i class="fa-solid fa-fire"></i> <span id="totalSoldVal">1,250</span>+ Sold
+          </span>
+        </div>
+      </div>
+      <div class="price-card">
+        <div class="price-label">— PRICE —</div>
+        <div class="price-val">৳ <span id="productUnitPrice">1,499</span></div>
+        <div id="stockBadge" class="stock-badge">
+          <i class="fa-solid fa-check"></i> IN STOCK
+        </div>
+      </div>
+    </div>
+
+    <!-- Description Card -->
+    <div class="card animate-item delay-4">
+      <div class="card-title"><i class="fa-solid fa-file-lines"></i> PRODUCT DESCRIPTION</div>
+      <div class="desc-grid">
+        <p id="productDesc">
+          High quality smartwatch with long battery backup and metallic body.
+        </p>
+        <div class="spec-icons">
+          <div class="spec-item"><i class="fa-solid fa-gem"></i><br>Durable</div>
+          <div class="spec-item"><i class="fa-solid fa-bolt"></i><br>High Perf</div>
+          <div class="spec-item"><i class="fa-solid fa-crown"></i><br>Best Price</div>
+          <div class="spec-item">
+            <i class="fa-solid fa-shield-halved"></i><br>
+            <span id="warrantyText">1 Year</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Order Summary & Delivery Calculator -->
+    <div class="card animate-item delay-5">
+      <div class="card-title"><i class="fa-solid fa-calculator"></i> ORDER SUMMARY</div>
+      
+      <div>
+        <div class="summary-row">
+          <span>Product Quantity</span>
+          <div class="qty-control">
+            <button type="button" class="qty-btn" onclick="updateQty(-1)">-</button>
+            <span class="qty-val" id="qtyDisplay">01</span>
+            <button type="button" class="qty-btn" onclick="updateQty(1)">+</button>
+          </div>
+        </div>
+
+        <div class="summary-row">
+          <span>Product Price (Subtotal)</span>
+          <span>৳ <span id="subtotalPrice">1,499</span></span>
+        </div>
+
+        <div class="summary-row">
+          <span>Delivery Charge</span>
+          <span>৳ <span id="deliveryCharge">120</span></span>
+        </div>
+
+        <div class="summary-row total">
+          <span>Total Amount</span>
+          <span>৳ <span id="totalAmount">1,619</span></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delivery Information Form -->
+    <div class="card animate-item delay-5">
+      <div class="card-title"><i class="fa-solid fa-location-dot"></i> DELIVERY INFORMATION</div>
+      <form id="orderForm" onsubmit="handleOrderSubmit(event)">
+        <div class="form-group">
+          <input type="text" id="custName" class="form-input" placeholder="Name / আপনার নাম" required>
+        </div>
+        <div class="form-group">
+          <input type="tel" id="custPhone" class="form-input" placeholder="Mobile Number / মোবাইল নম্বর" required>
+        </div>
+        <div class="form-group">
+          <input type="text" id="custDistrict" class="form-input" placeholder="District / জেলা" required>
+        </div>
+        <div class="form-group">
+          <input type="text" id="custUpazila" class="form-input" placeholder="Upazila / উপজেলা" required>
+        </div>
+        <div class="form-group">
+          <input type="text" id="custAddress" class="form-input" placeholder="Address / পূর্ণাঙ্গ ঠিকানা" required>
+        </div>
+
+        <button type="submit" id="orderBtn" class="btn-order">
+          <i class="fa-solid fa-cart-shopping"></i> PLACE ORDER
+        </button>
+      </form>
+    </div>
+
+    <!-- WhatsApp Contact -->
+    <div class="whatsapp-bar animate-item delay-6">
+      <div>
+        <div style="font-size: 12px; font-weight: bold;">CONTACT US ON WHATSAPP</div>
+        <div style="font-size: 10px; opacity: 0.9;">We are here to help you!</div>
+      </div>
+      <a href="#" id="waLink" class="wa-btn" target="_blank">CHAT NOW <i class="fa-solid fa-paper-plane"></i></a>
+    </div>
+
+  </div>
+
+  <!-- JavaScript Config & Dynamic Updates -->
+  <script>
+    const PRODUCT_CONFIG = {
+      companyName: "YOUR COMPANY",
+      companyTagline: "Quality You Can Trust",
+      productId: "0023",
+      productName: "SMART WATCH ULTRA",
+      unitPrice: 1499,
+      deliveryCharge: 120,
+      
+      // 🆕 Total Sold এডিট করার ঘর:
+      totalSold: 1250,             // মোট কত পিস বিক্রি হয়েছে (English Digits)
+      
+      warranty: "1 Year Warranty",
+      inStock: true,
+      imageUrl: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500", 
+      description: "High quality smartwatch with 1.9 inch HD display and long lasting battery backup.",
+      whatsappNumber: "+8801700000000"
+    };
+
+    let selectedQty = 1;
+
+    function initPage() {
+      document.getElementById("companyName").innerText = PRODUCT_CONFIG.companyName;
+      document.getElementById("companyTagline").innerText = PRODUCT_CONFIG.companyTagline;
+      document.getElementById("productId").innerText = PRODUCT_CONFIG.productId;
+      document.getElementById("productName").innerText = PRODUCT_CONFIG.productName;
+      
+      // Total Sold আপডেট
+      document.getElementById("totalSoldVal").innerText = PRODUCT_CONFIG.totalSold.toLocaleString('en-US');
+      
+      document.getElementById("productUnitPrice").innerText = PRODUCT_CONFIG.unitPrice.toLocaleString('en-US');
+      document.getElementById("deliveryCharge").innerText = PRODUCT_CONFIG.deliveryCharge.toLocaleString('en-US');
+      document.getElementById("productImage").src = PRODUCT_CONFIG.imageUrl;
+      document.getElementById("productDesc").innerText = PRODUCT_CONFIG.description;
+      document.getElementById("warrantyText").innerText = PRODUCT_CONFIG.warranty;
+      document.getElementById("waLink").href = `https://wa.me/${PRODUCT_CONFIG.whatsappNumber.replace(/[^0-9]/g, '')}`;
+
+      const stockBadge = document.getElementById("stockBadge");
+      const orderBtn = document.getElementById("orderBtn");
+
+      if (PRODUCT_CONFIG.inStock) {
+        stockBadge.className = "stock-badge";
+        stockBadge.innerHTML = `<i class="fa-solid fa-check"></i> IN STOCK`;
+        orderBtn.disabled = false;
+        orderBtn.innerHTML = `<i class="fa-solid fa-cart-shopping"></i> PLACE ORDER`;
+      } else {
+        stockBadge.className = "stock-badge out-of-stock";
+        stockBadge.innerHTML = `<i class="fa-solid fa-xmark"></i> OUT OF STOCK`;
+        orderBtn.disabled = true;
+        orderBtn.innerHTML = `<i class="fa-solid fa-ban"></i> OUT OF STOCK`;
+      }
+
+      calculateTotal();
+    }
+
+    function updateQty(change) {
+      if (!PRODUCT_CONFIG.inStock) return;
+      if (selectedQty + change >= 1) {
+        selectedQty += change;
+        calculateTotal();
+      }
+    }
+
+    function calculateTotal() {
+      const subtotal = PRODUCT_CONFIG.unitPrice * selectedQty;
+      const grandTotal = subtotal + PRODUCT_CONFIG.deliveryCharge;
+
+      document.getElementById("qtyDisplay").innerText = selectedQty < 10 ? "0" + selectedQty : selectedQty;
+      document.getElementById("subtotalPrice").innerText = subtotal.toLocaleString('en-US');
+      document.getElementById("totalAmount").innerText = grandTotal.toLocaleString('en-US');
+    }
+
+    function handleOrderSubmit(event) {
+      event.preventDefault();
+
+      if (!PRODUCT_CONFIG.inStock) {
+        alert("Sorry, this item is currently out of stock!");
+        return;
+      }
+
+      const name = document.getElementById("custName").value;
+      const phone = document.getElementById("custPhone").value;
+      const district = document.getElementById("custDistrict").value;
+      const upazila = document.getElementById("custUpazila").value;
+      const address = document.getElementById("custAddress").value;
+
+      const subtotal = PRODUCT_CONFIG.unitPrice * selectedQty;
+      const grandTotal = subtotal + PRODUCT_CONFIG.deliveryCharge;
+
+      const message = `🛒 *NEW ORDER RECEIVED*%0A%0A` +
+        `📦 *Product:* ${PRODUCT_CONFIG.productName} (ID: ${PRODUCT_CONFIG.productId})%0A` +
+        `🛡️ *Warranty:* ${PRODUCT_CONFIG.warranty}%0A` +
+        `🔢 *Quantity:* ${selectedQty}%0A` +
+        `💵 *Subtotal:* ৳${subtotal.toLocaleString('en-US')}%0A` +
+        `🚚 *Delivery Charge:* ৳${PRODUCT_CONFIG.deliveryCharge.toLocaleString('en-US')}%0A` +
+        `💰 *Total Amount:* ৳${grandTotal.toLocaleString('en-US')}%0A%0A` +
+        `👤 *Customer Details:*%0A` +
+        `• Name: ${name}%0A` +
+        `• Phone: ${phone}%0A` +
+        `• Location: ${upazila}, ${district}%0A` +
+        `• Address: ${address}`;
+
+      const waUrl = `https://wa.me/${PRODUCT_CONFIG.whatsappNumber.rep
